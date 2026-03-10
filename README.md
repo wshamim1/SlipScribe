@@ -127,4 +127,9 @@ Commonly required values:
 Use `.env.example` as the source of truth for available variables.
 
 ## Status
-Early development (MVP in progress).
+SlipScribe is actively being developed (MVP in progress).
+
+Contributions are welcome. If you want to contribute, feel free to open an issue or submit a pull request.
+
+## License
+This project is open source and available under the MIT License. See `LICENSE`.
