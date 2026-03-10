@@ -1,34 +1,129 @@
 # SlipScribe
 
-SlipScribe is a mobile-first receipt & bill vault that turns photos into structured data. Snap a receipt, and SlipScribe extracts the merchant, totals, taxes, and **line items** so you can search what you bought, track spending by category/merchant, and export clean reports when you need them.
+SlipScribe is a receipt and bill vault that converts images into structured, searchable spending data.
 
-## What it does (MVP)
-- Capture receipts/bills with the phone camera (single or multi-photo receipts)
-- Auto-enhance images (crop, deskew, contrast) for better readability
-- OCR + parsing to extract:
-  - Merchant name, purchase date, subtotal/tax/total
-  - **Line items** (name, qty, unit price, line total)
-- Review & edit extracted fields with a fast correction UI
-- Receipt vault with full-text search (e.g., search for “battery”, “milk”, “Home Depot”)
-- Export data (CSV) for reimbursements, budgeting, or tax time
+## What It Does
+- Upload receipt images from the frontend inbox.
+- Run OCR and extraction in the backend.
+- Store normalized receipt data (merchant, totals, taxes, line items).
+- Search receipts and review details.
+- Export receipt data for reporting workflows.
 
-## Why SlipScribe
-Receipts are easy to lose and hard to use. SlipScribe makes them searchable and actionable—without manual typing.
+## Screenshots
 
-## Privacy-first by design
-- Receipts belong to you
-- Local storage supported from day one (with optional cloud sync later)
-- Clear controls for export and deletion
+### Homepage
+![SlipScribe Homepage](screenshots/homepage.png)
 
-## Roadmap (later)
-- Auto-match receipts to transactions (CSV/Plaid)
-- Spending insights + anomaly alerts
-- Warranty/return reminders
-- Household sharing (shared vault)
-- Tags & smart categorization
+### Dashboard
+![SlipScribe Dashboard](screenshots/dashboard.png)
 
-## Tech notes
-SlipScribe uses an OCR + structuring pipeline to convert receipt text into a strict JSON schema, with confidence scoring and reconciliation checks (totals vs. line item sums).
+## Current Stack
+- Frontend: React + Vite + TypeScript
+- Backend: FastAPI + SQLAlchemy + Alembic + Celery
+- Data services: PostgreSQL + Redis + Milvus + MinIO
+- LLM/OCR providers: OpenAI, Groq, Mistral (configurable)
 
----
-**Status:** early development
+See `TECH_STACK.md` for details.
+
+## Repository Layout
+```text
+backend/      FastAPI app, models, services, migrations
+frontend/     React app (Vite)
+db/           SQL seed + migration helpers
+scripts/      Start/stop and dev convenience scripts
+openapi.yaml  API contract snapshot
+```
+
+## Quick Start
+
+### 1) Prepare env file
+```bash
+cp .env.example .env
+```
+
+Update `.env` with your API keys (at least one provider key).
+
+### 2) Start everything (recommended)
+
+macOS/Linux:
+```bash
+./scripts/start-all.sh
+```
+
+macOS/Linux (foreground logs):
+```bash
+./scripts/dev.sh
+```
+
+Windows:
+```cmd
+scripts\start-all.bat
+```
+
+### 3) Open apps
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8000`
+- API Docs: `http://localhost:8000/docs`
+- MinIO Console: `http://localhost:9001`
+
+## Stop Services
+macOS/Linux:
+```bash
+./scripts/stop.sh
+```
+
+Windows:
+```cmd
+scripts\stop.bat
+```
+
+## Manual Development Setup
+
+### Infrastructure
+```bash
+docker-compose up -d
+```
+
+### Backend
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+### Frontend
+```bash
+cd frontend
+pnpm install
+pnpm dev
+```
+
+### Worker (optional)
+```bash
+cd backend
+source venv/bin/activate
+celery -A app.celery_app:celery_app worker --loglevel=info
+```
+
+## Core Docs
+- Setup guide: `SETUP.md`
+- Script usage: `scripts/README.md`
+- Project plan: `PROJECT_PLAN.md`
+- API spec: `openapi.yaml`
+
+## Environment Variables
+Primary configuration lives in `.env`.
+
+Commonly required values:
+- `DATABASE_URL`
+- `REDIS_URL`
+- `JWT_SECRET`
+- One provider key such as `OPENAI_API_KEY` or `GROQ_API_KEY`
+
+Use `.env.example` as the source of truth for available variables.
+
+## Status
+Early development (MVP in progress).
