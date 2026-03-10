@@ -21,7 +21,8 @@ SlipScribe is a receipt and bill vault that converts images into structured, sea
 - Frontend: React + Vite + TypeScript
 - Backend: FastAPI + SQLAlchemy + Alembic + Celery
 - Data services: PostgreSQL + Redis + Milvus + MinIO
-- LLM/OCR providers: OpenAI, Groq, Mistral (configurable)
+- OCR/Document processing: Docling
+- LLM providers: OpenAI, Groq, Mistral (configurable)
 
 See `TECH_STACK.md` for details.
 
